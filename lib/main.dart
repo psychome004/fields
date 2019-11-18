@@ -1,8 +1,10 @@
-import 'package:fields/json_form.dart';
+import 'package:fields/stepper_form.dart';
+import 'package:fields/test_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'form_field.dart';
 
-void main() => runApp(Homepage());
+void main() => runApp(FormStepper());
 
 class Homepage extends StatefulWidget {
   @override
@@ -12,16 +14,41 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
   List<Map> _formData = [
-    {'label': 'Your Name', 'type': 'textfield', 'value': ''},
-    {'label': 'Email', 'type': 'email', 'value': ''},
-    {'label': 'Password', 'type': 'password', 'value': ''},
-    {'label': 'Contact Number', 'type': 'number', 'value': ''},
-    {'label': 'Gender', 'type': 'radio', 'value': ['Male', 'Female', 'Other']},
-    {'label': 'Select Country', 'type': 'dropdown', 'value': ['India', 'Sweden', 'U.S.A']},
-    {'label': 'Course', 'type': 'checkbox_multiple', 'value': ['JAVA', 'PHP', 'PYTHON']},
+    {'label': 'Your Name', 'type': 'text', 'value': 'Flutter'},
+    {'label': 'Email', 'type': 'email', 'value': 'anything@gmail.com'},
+    {'label': 'Password', 'type': 'password', 'value': 'qwerty'},
+    {'label': 'Contact Number', 'type': 'number', 'value': '8976789067'},
+    {
+      'label': 'Gender',
+      'type': 'radio',
+      'options': ['Male', 'Female', 'Other'],
+      'defaultValue' : 'Male'
+    },
+    {
+      'label': 'Select Country',
+      'type': 'dropdown',
+      'options': ['India', 'Sweden', 'U.S.A'],
+      'defaultValue': 'India'
+    },
+    {
+      'label': 'Course',
+      'type': 'checkbox_multiple',
+      'options': ['JAVA', 'PHP', 'PYTHON'],
+    },
     {'label': 'Date', 'type': 'date', 'value': ''},
 //    {'label': 'Accept the terms and conditions', 'type': 'checkbox_single', 'value': ''},
   ];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    print(_formData.length);
+
+    OrbitFormField formField = OrbitFormField(_formData[0]);
+    //print(formField);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +68,8 @@ class _HomepageState extends State<Homepage> {
               autovalidate: true,
               child: Column(
                   children: _formData.map((data) {
-                return JsonFormBuilder(
-                    label: data['label'],
-                    type: data['type'],
-                    value: data['value']);
+
+                return OrbitFormField(data).widget;
               }).toList()),
             ),
             Row(
