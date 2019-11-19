@@ -18,10 +18,24 @@ class _FormStepperState extends State<FormStepper> {
         isActive: true,
         //state: StepState.editing,
         state: StepState.indexed,
-        content: Text('hello')),
+        content: Text('HI')
+    ),
   ];
 
-
+//  List<Step> _getSteps(fields){
+//    int count;
+//    var _steps = fields.map((field){
+//        return Step(
+//            title: Text('Page  $count++'),
+//            //subtitle: const Text('Subtitle'),
+//            isActive: true,
+//            //state: StepState.editing,
+//            state: StepState.indexed,
+//            content: field
+//        );
+//      });
+//      return _steps;
+//    }
 
   @override
   Widget build(BuildContext context) {
@@ -37,61 +51,53 @@ class _FormStepperState extends State<FormStepper> {
       }
     }
 
-
-
-
-    return Container(
-        child: new FormBuilder(
-          key: _jsonFormKey,
-          child: ListView(children: <Widget>[
-            new Stepper(
-              steps: steps,
-              type: StepperType.vertical,
-              currentStep: this.currStep,
-              onStepContinue: () {
-                setState(() {
-                  if (currStep < steps.length - 1) {
-                    currStep = currStep + 1;
-                  } else {
-                    currStep = 0;
-                  }
-                  // else {
-                  // Scaffold
-                  //     .of(context)
-                  //     .showSnackBar(new SnackBar(content: new Text('$currStep')));
-
-                  // if (currStep == 1) {
-                  //   print('First Step');
-                  //   print('object' + FocusScope.of(context).toStringDeep());
-                  // }
-
-                  // }
-                });
-              },
-              onStepCancel: () {
-                setState(() {
-                  if (currStep > 0) {
-                    currStep = currStep - 1;
-                  } else {
-                    currStep = 0;
-                  }
-                });
-              },
-              onStepTapped: (step) {
-                setState(() {
-                  currStep = step;
-                });
-              },
-            ),
-            new RaisedButton(
-              child: new Text(
-                'Save details',
-                style: new TextStyle(color: Colors.white),
-              ),
-              onPressed: _submitDetails,
-              color: Colors.blue,
-            ),
-          ]),
-        ));
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('Stepper Form'),),
+        body: Container(
+            child: new FormBuilder(
+              key: _jsonFormKey,
+              child: ListView(children: <Widget>[
+                new Stepper(
+                  steps: steps,
+                  type: StepperType.vertical,
+                  currentStep: this.currStep,
+                  onStepContinue: () {
+                    setState(() {
+                      if (currStep < steps.length - 1) {
+                        currStep = currStep + 1;
+                      } else {
+                        //Trigger submit when all steps are completed
+                        currStep = 0;
+                      }
+                    });
+                  },
+                  onStepCancel: () {
+                    setState(() {
+                      if (currStep > 0) {
+                        currStep = currStep - 1;
+                      } else {
+                        currStep = 0;
+                      }
+                    });
+                  },
+                  onStepTapped: (step) {
+                    setState(() {
+                      currStep = step;
+                    });
+                  },
+                ),
+                new RaisedButton(
+                  child: new Text(
+                    'Save details',
+                    style: new TextStyle(color: Colors.white),
+                  ),
+                  onPressed: _submitDetails,
+                  color: Colors.blue,
+                ),
+              ]),
+            )),
+      ),
+    );
   }
 }

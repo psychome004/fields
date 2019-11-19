@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'form_field.dart';
 
-void main() => runApp(FormStepper());
+void main() => runApp(MyApp());
 
 class Homepage extends StatefulWidget {
   @override
@@ -13,6 +13,7 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
+
   List<Map> _formData = [
     {'label': 'Your Name', 'type': 'text', 'value': 'Flutter'},
     {'label': 'Email', 'type': 'email', 'value': 'anything@gmail.com'},
@@ -22,7 +23,7 @@ class _HomepageState extends State<Homepage> {
       'label': 'Gender',
       'type': 'radio',
       'options': ['Male', 'Female', 'Other'],
-      'defaultValue' : 'Male'
+      'defaultValue': 'Male'
     },
     {
       'label': 'Select Country',
@@ -30,6 +31,7 @@ class _HomepageState extends State<Homepage> {
       'options': ['India', 'Sweden', 'U.S.A'],
       'defaultValue': 'India'
     },
+    /*
     {
       'label': 'Course',
       'type': 'checkbox_multiple',
@@ -37,7 +39,10 @@ class _HomepageState extends State<Homepage> {
     },
     {'label': 'Date', 'type': 'date', 'value': ''},
 //    {'label': 'Accept the terms and conditions', 'type': 'checkbox_single', 'value': ''},
+    */
   ];
+
+
 
   @override
   void initState() {
@@ -45,7 +50,7 @@ class _HomepageState extends State<Homepage> {
     super.initState();
 
     print(_formData.length);
-
+//    print(_Data[0]);
     OrbitFormField formField = OrbitFormField(_formData[0]);
     //print(formField);
   }
@@ -67,10 +72,10 @@ class _HomepageState extends State<Homepage> {
               },
               autovalidate: true,
               child: Column(
-                  children: _formData.map((data) {
-
-                return OrbitFormField(data).widget;
-              }).toList()),
+                children: _formData.map((data){
+                  return OrbitFormField(data).widget;
+                }).toList()
+              ),
             ),
             Row(
               children: <Widget>[
@@ -96,4 +101,6 @@ class _HomepageState extends State<Homepage> {
 //            body: FormFields()),
     );
   }
+
+
 }

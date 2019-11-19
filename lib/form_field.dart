@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 class OrbitFormField {
   String label;
   String type;
-  var value;            // THIS CAN BE STRING OR LIST
+  var value; // THIS CAN BE STRING OR LIST
   String defaultValue;
   var options;
 
@@ -14,7 +14,8 @@ class OrbitFormField {
   OrbitFormField(Map data) {
     this.label = data.containsKey('label') ? data['label'] : "";
     this.type = data.containsKey('type') ? data['type'] : "text";
-    this.defaultValue = data.containsKey('defaultValue') ? data['defaultValue'] : '';
+    this.defaultValue =
+        data.containsKey('defaultValue') ? data['defaultValue'] : '';
     if (data.containsKey('value')) {
       this.value = data['value'];
     }
@@ -23,28 +24,25 @@ class OrbitFormField {
     }
 
     this.widget = build();
-
-    
-
   }
 
-  Map toJson(){
+  Map toJson() {
     Map data = {
       'label': this.label,
-      'type'  : this.type,
+      'type': this.type,
       'attribute': getAttribute(),
       'defaultValue': this.defaultValue
     };
-    if(this.value != null){
+    if (this.value != null) {
       data['value'] = this.value;
     }
-    if(this.options != null){
+    if (this.options != null) {
       data['options'] = this.options;
     }
     return data;
   }
 
-  String toString(){
+  String toString() {
     return toJson().toString();
   }
 
@@ -64,24 +62,42 @@ class OrbitFormField {
   }
 
   Widget build() {
+    Widget child;
     switch (this.type) {
       case 'text':
-        return buildText();
+        child = buildText();
+        break;
       case 'email':
-        return buildEmail();
+        child = buildEmail();
+        break;
       case 'password':
-        return buildPassword();
+        child = buildPassword();
+        break;
       case 'number':
-        return buildNumber();
+        child = buildNumber();
+        break;
       case 'dropdown':
-        return buildDropdown();
-      case 'checkbox_multiple':
-        return buildCheckboxes();
+        child = buildDropdown();
+        break;
+      case 'checkboxes':
+        child = buildCheckboxes();
+        break;
       case 'radio':
-        return buildRadio();
+        child = buildRadio();
+        break;
       case 'date':
-        return buildDateTimePicker();
+        child = buildDateTimePicker();
+        break;
     }
+
+    return Column(
+      children: <Widget>[
+        child,
+        SizedBox(
+          height: 30.0,
+        )
+      ],
+    );
   }
 
   Widget buildNumber() {
@@ -116,7 +132,6 @@ class OrbitFormField {
   }
 
   Widget buildDropdown() {
-
     return FormBuilderDropdown(
       attribute: getAttribute(),
       decoration: InputDecoration(labelText: this.label),
@@ -125,6 +140,7 @@ class OrbitFormField {
       validators: [FormBuilderValidators.required()],
       items: listOptionsForWidget(),
     );
+
   }
 
   Widget buildRadio() {
@@ -132,15 +148,22 @@ class OrbitFormField {
       attribute: getAttribute(),
       initialValue: (this.value != null) ? this.value : this.defaultValue,
       validators: [FormBuilderValidators.required()],
-      decoration: InputDecoration(labelText: this.label),
+      decoration: InputDecoration(
+          labelText: this.label,
+          border: UnderlineInputBorder(
+              borderSide: BorderSide(
+                  color: Colors.red,
+                  width: 2.0,
+                  style: BorderStyle.solid))),
       options: listOptionsForWidget(),
     );
   }
 
   Widget buildCheckboxes() {
+    var initialValue = (this.value != null) ? this.value : [];
     return FormBuilderCheckboxList(
       attribute: getAttribute(),
-      initialValue: this.value,
+      initialValue: initialValue,
       decoration: InputDecoration(labelText: this.label),
       options: listOptionsForWidget(),
     );
@@ -157,11 +180,11 @@ class OrbitFormField {
 
   Widget buildTextField(
       {keyboardType = TextInputType.text,
-        errorText = 'Cannot be empty',
-        errorMailText,
-        errorNumericText,
-        validators,
-        obscureText = false}) {
+      errorText = 'Cannot be empty',
+      errorMailText,
+      errorNumericText,
+      validators,
+      obscureText = false}) {
     if (validators == null) {
       validators = [FormBuilderValidators.required(errorText: errorText)];
     }
