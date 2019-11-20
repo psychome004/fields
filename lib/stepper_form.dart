@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fields/form_helper.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class MyApp extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return new MyAppScreenMode();
   }
-}
-
-class MyData {
-  String name = '';
-  String phone = '';
-  String email = '';
-  String age = '';
 }
 
 class MyAppScreenMode extends State<MyApp> {
@@ -38,33 +32,16 @@ class StepperBody extends StatefulWidget {
 
 class _StepperBodyState extends State<StepperBody> {
   int currStep = 0;
-  static var _focusNode = new FocusNode();
-  GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-  static MyData data = new MyData();
-
-  @override
-  void initState() {
-    super.initState();
-    _focusNode.addListener(() {
-      setState(() {});
-      print('Has focus: $_focusNode.hasFocus');
-    });
-  }
-
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    super.dispose();
-  }
+  GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
 
   List<Step> listSteps() {
     List<Map> stepsData = [
       {
         'title': 'Primary Information',
         'fields': [
-          {'label': 'Your Name', 'type': 'text', 'value': 'Flutter'},
-          {'label': 'Email', 'type': 'email', 'value': 'anything@gmail.com'},
-          {'label': 'Contact Number', 'type': 'number', 'value': '8976789067'},
+          {'label': 'Your Name', 'type': 'text'},
+          {'label': 'Email', 'type': 'email'},
+          {'label': 'Contact Number', 'type': 'number'},
         ]
       },
       {
@@ -82,6 +59,12 @@ class _StepperBodyState extends State<StepperBody> {
             'options': ['India', 'Sweden', 'U.S.A'],
             'defaultValue': 'India'
           },
+
+        ],
+      },
+      {
+        'title': 'Technical Information',
+        'fields':[
           {
             'label': 'Course',
             'type': 'checkboxes',
@@ -90,98 +73,42 @@ class _StepperBodyState extends State<StepperBody> {
           },
         ],
       },
-      {'title': 'Email'},
-      {'title': 'Age'},
     ];
     return FormHelper().listSteps(data: stepsData, currentIndex: currStep);
   }
 
   @override
   Widget build(BuildContext context) {
-    void showSnackBarMessage(String message,
-        [MaterialColor color = Colors.red]) {
-      Scaffold.of(context)
-          .showSnackBar(new SnackBar(content: new Text(message)));
-    }
-
-    void _submitDetails() {
-      final FormState formState = _formKey.currentState;
-
-      if (!formState.validate()) {
-        showSnackBarMessage('Please enter correct data');
-      } else {
-        formState.save();
-        print("Name: ${data.name}");
-        print("Phone: ${data.phone}");
-        print("Email: ${data.email}");
-        print("Age: ${data.age}");
-
-        showDialog(
-            context: context,
-            child: new AlertDialog(
-              title: new Text("Details"),
-              //content: new Text("Hello World"),
-              content: new SingleChildScrollView(
-                child: new ListBody(
-                  children: <Widget>[
-                    new Text("Name : " + data.name),
-                    new Text("Phone : " + data.phone),
-                    new Text("Email : " + data.email),
-                    new Text("Age : " + data.age),
-                  ],
-                ),
-              ),
-              actions: <Widget>[
-                new FlatButton(
-                  child: new Text('OK'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ));
-      }
-    }
-
     return new Container(
-        child: new Form(
+        child: FormBuilder(
       key: _formKey,
+      initialValue: {
+        'date': DateTime.now(),
+        'email': 'samvthom16@gmail.com',
+        'your_name': 'Samuel'
+      },
+      autovalidate: true,
       child: ListView(children: <Widget>[
         Stepper(
           steps: listSteps(),
           physics: ClampingScrollPhysics(),
-//          controlsBuilder: (BuildContext context,
-//              {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
-//            return Row(
-//              children: <Widget>[
-//                FlatButton(
-//                  onPressed: onStepContinue,
-//                  child: Text('NEXT'),
-//                ),
-//                FlatButton(
-//                  onPressed: onStepCancel,
-//                  child: Text('PREVIOUS'),
-//                ),
-//              ],
-//            );
-//          },
           type: StepperType.vertical,
           currentStep: this.currStep,
           onStepContinue: () {
+            FocusScope.of(context).unfocus();
             setState(() {
               if (currStep < listSteps().length - 1) {
                 currStep = currStep + 1;
               } else {
-                FocusScope.of(context).unfocus();
+                formSubmit();
                 //Trigger submit event when all the steps are completed
-//                    currStep = 0;
                 print('Completed!!!!');
               }
             });
           },
           onStepCancel: () {
+            FocusScope.of(context).unfocus();
             setState(() {
-              FocusScope.of(context).unfocus();
               if (currStep > 0) {
                 currStep = currStep - 1;
               } else {
@@ -195,15 +122,15 @@ class _StepperBodyState extends State<StepperBody> {
             });
           },
         ),
-        RaisedButton(
-          child: new Text(
-            'Submit',
-            style: new TextStyle(color: Colors.white),
-          ),
-          onPressed: _submitDetails,
-          color: Colors.deepPurple,
-        ),
       ]),
     ));
   }
+
+  formSubmit(){
+    print('Form submitted');
+    if (_formKey.currentState.saveAndValidate()) {
+      print(_formKey.currentState.value);
+    }
+  }
+
 }

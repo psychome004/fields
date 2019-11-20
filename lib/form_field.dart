@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 class OrbitFormField {
   String label;
   String type;
+  String slug;
   var value; // THIS CAN BE STRING OR LIST
   String defaultValue;
   var options;
@@ -14,6 +15,7 @@ class OrbitFormField {
   OrbitFormField(Map data) {
     this.label = data.containsKey('label') ? data['label'] : "";
     this.type = data.containsKey('type') ? data['type'] : "text";
+    this.slug = data.containsKey('slug') ? data['slug'] : getAttribute();
     this.defaultValue =
         data.containsKey('defaultValue') ? data['defaultValue'] : '';
     if (data.containsKey('value')) {
@@ -24,13 +26,19 @@ class OrbitFormField {
     }
 
     this.widget = build();
+
+    /*
+    GlobalKey<FormBuilderState> _formKey = FormBuilder.of(context);
+    print(_formKey);
+    */
+
   }
 
   Map toJson() {
     Map data = {
       'label': this.label,
       'type': this.type,
-      'attribute': getAttribute(),
+      'slug': this.slug,
       'defaultValue': this.defaultValue
     };
     if (this.value != null) {
@@ -133,7 +141,7 @@ class OrbitFormField {
 
   Widget buildDropdown() {
     return FormBuilderDropdown(
-      attribute: getAttribute(),
+      attribute: this.slug,
       decoration: InputDecoration(labelText: this.label),
       initialValue: (this.value != null) ? this.value : this.defaultValue,
       hint: Text(this.label),
@@ -145,7 +153,7 @@ class OrbitFormField {
 
   Widget buildRadio() {
     return FormBuilderRadio(
-      attribute: getAttribute(),
+      attribute: this.slug,
       initialValue: (this.value != null) ? this.value : this.defaultValue,
       validators: [FormBuilderValidators.required()],
       decoration: InputDecoration(
@@ -162,7 +170,7 @@ class OrbitFormField {
   Widget buildCheckboxes() {
     var initialValue = (this.value != null) ? this.value : [];
     return FormBuilderCheckboxList(
-      attribute: getAttribute(),
+      attribute: this.slug,
       initialValue: initialValue,
       decoration: InputDecoration(labelText: this.label),
       options: listOptionsForWidget(),
@@ -171,7 +179,7 @@ class OrbitFormField {
 
   Widget buildDateTimePicker() {
     return FormBuilderDateTimePicker(
-      attribute: getAttribute(),
+      attribute: this.slug,
       inputType: InputType.date,
       format: DateFormat("yyyy-MM-dd"),
       decoration: InputDecoration(labelText: this.label),
@@ -196,9 +204,9 @@ class OrbitFormField {
 
     return FormBuilderTextField(
       keyboardType: keyboardType,
-      initialValue: this.value,
+      //initialValue: this.value,
       obscureText: obscureText,
-      attribute: getAttribute(),
+      attribute: this.slug,
       decoration: InputDecoration(labelText: this.label),
       validators: validators,
     );
