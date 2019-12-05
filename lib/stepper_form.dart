@@ -5,29 +5,29 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 class MyApp extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return new MyAppScreenMode();
+    return MyAppScreenMode();
   }
 }
 
 class MyAppScreenMode extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-        theme: new ThemeData(
+    return MaterialApp(
+        theme: ThemeData(
           primarySwatch: Colors.deepPurple,
         ),
-        home: new Scaffold(
-          appBar: new AppBar(
-            title: new Text('Stepper Form'),
+        home: Scaffold(
+          appBar: AppBar(
+            title: Text('Stepper Form'),
           ),
-          body: new StepperBody(),
+          body: StepperBody(),
         ));
   }
 }
 
 class StepperBody extends StatefulWidget {
   @override
-  _StepperBodyState createState() => new _StepperBodyState();
+  _StepperBodyState createState() => _StepperBodyState();
 }
 
 class _StepperBodyState extends State<StepperBody> {
@@ -59,12 +59,11 @@ class _StepperBodyState extends State<StepperBody> {
             'options': ['India', 'Sweden', 'U.S.A'],
             'defaultValue': 'India'
           },
-
         ],
       },
       {
         'title': 'Technical Information',
-        'fields':[
+        'fields': [
           {
             'label': 'Course',
             'type': 'checkboxes',
@@ -79,58 +78,58 @@ class _StepperBodyState extends State<StepperBody> {
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
-        child: FormBuilder(
-      key: _formKey,
-      initialValue: {
-        'date': DateTime.now(),
-        'email': 'samvthom16@gmail.com',
-        'your_name': 'Samuel'
-      },
-      autovalidate: true,
-      child: ListView(children: <Widget>[
-        Stepper(
-          steps: listSteps(),
-          physics: ClampingScrollPhysics(),
-          type: StepperType.vertical,
-          currentStep: this.currStep,
-          onStepContinue: () {
-            FocusScope.of(context).unfocus();
-            setState(() {
-              if (currStep < listSteps().length - 1) {
-                currStep = currStep + 1;
-              } else {
-                formSubmit();
-                //Trigger submit event when all the steps are completed
-                print('Completed!!!!');
-              }
-            });
-          },
-          onStepCancel: () {
-            FocusScope.of(context).unfocus();
-            setState(() {
-              if (currStep > 0) {
-                currStep = currStep - 1;
-              } else {
-                currStep = 0;
-              }
-            });
-          },
-          onStepTapped: (step) {
-            setState(() {
-              currStep = step;
-            });
-          },
-        ),
-      ]),
-    ));
+    return Container(
+      child: FormBuilder(
+        key: _formKey,
+        initialValue: {
+          'date': DateTime.now(),
+          'email': 'samvthom16@gmail.com',
+          'your_name': 'Samuel'
+        },
+        autovalidate: true,
+        child: ListView(children: <Widget>[
+          Stepper(
+            steps: listSteps(),
+            physics: ClampingScrollPhysics(),
+            type: StepperType.vertical,
+            currentStep: this.currStep,
+            onStepContinue: () {
+              FocusScope.of(context).unfocus();
+              setState(() {
+                if (currStep < listSteps().length - 1) {
+                  currStep = currStep + 1;
+                } else {
+                  formSubmit();
+                  //Trigger submit event when all the steps are completed
+                  print('Completed!!!!');
+                }
+              });
+            },
+            onStepCancel: () {
+              FocusScope.of(context).unfocus();
+              setState(() {
+                if (currStep > 0) {
+                  currStep = currStep - 1;
+                } else {
+                  currStep = 0;
+                }
+              });
+            },
+            onStepTapped: (step) {
+              setState(() {
+                currStep = step;
+              });
+            },
+          ),
+        ]),
+      ),
+    );
   }
 
-  formSubmit(){
+  formSubmit() {
     print('Form submitted');
     if (_formKey.currentState.saveAndValidate()) {
       print(_formKey.currentState.value);
     }
   }
-
 }
